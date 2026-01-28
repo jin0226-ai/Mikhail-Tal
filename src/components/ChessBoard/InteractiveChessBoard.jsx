@@ -10,6 +10,12 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playSpeed, setPlaySpeed] = useState(1000);
   const intervalRef = useRef(null);
+  const onMoveChangeRef = useRef(onMoveChange);
+
+  // onMoveChange ref를 최신 상태로 유지
+  useEffect(() => {
+    onMoveChangeRef.current = onMoveChange;
+  }, [onMoveChange]);
 
   useEffect(() => {
     const newGame = new Chess();
@@ -53,6 +59,10 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
   useEffect(() => {
     // 현재 수까지 게임을 재구성
     const newGame = new Chess();
+    console.log('=== Position Update ===');
+    console.log('currentMove:', currentMove);
+    console.log('moves.length:', moves.length);
+
     for (let i = 0; i < currentMove; i++) {
       try {
         // move 객체에서 SAN 표기법을 사용하거나 객체 자체를 전달
@@ -68,13 +78,16 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
       }
     }
 
-    // FEN 문자열로 포지션 업데이트
-    setPosition(newGame.fen());
+    const newFen = newGame.fen();
+    console.log('Calculated FEN:', newFen);
 
-    if (onMoveChange && moves[currentMove - 1]) {
-      onMoveChange(moves[currentMove - 1], currentMove);
+    // FEN 문자열로 포지션 업데이트
+    setPosition(newFen);
+
+    if (onMoveChangeRef.current && moves[currentMove - 1]) {
+      onMoveChangeRef.current(moves[currentMove - 1], currentMove);
     }
-  }, [currentMove, moves, onMoveChange]);
+  }, [currentMove, moves]);
 
   const goToMove = (moveIndex) => {
     setIsPlaying(false);
@@ -124,6 +137,7 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
 
       <div className="board-container">
         <Chessboard
+          key={position}
           position={position}
           boardWidth={500}
           customBoardStyle={{

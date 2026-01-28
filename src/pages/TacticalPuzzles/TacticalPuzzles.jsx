@@ -151,6 +151,7 @@ function TacticalPuzzles() {
 
           <div className="board-wrapper">
             <Chessboard
+              key={position}
               position={position}
               boardWidth={500}
               customBoardStyle={{
