@@ -1,0 +1,80 @@
+// Mikhail Tal의 게임에서 가져온 전술 훈련 문제들
+export const tacticalPuzzles = [
+  {
+    id: 1,
+    title: "Tal의 비숍 희생",
+    difficulty: "중급",
+    fen: "r1bqk2r/pp3ppp/2n1pn2/2pp4/1b1P4/2N1PN2/PP3PPP/R1BQKB1R w KQkq - 0 1",
+    solution: "Nxd5",
+    explanation: "중앙의 나이트로 d5 폰을 잡으면서 흑의 진형을 무너뜨립니다. 이는 Tal이 자주 사용하던 중앙 파괴 전술입니다.",
+    theme: "폰 구조 파괴",
+    moves: ["e2e3", "f3e5", "d4d5"],
+  },
+  {
+    id: 2,
+    title: "퀸과 비숍의 조합",
+    difficulty: "고급",
+    fen: "r2qkb1r/ppp2ppp/2n5/4P3/2Bp4/8/PP3PPP/RNBQR1K1 w kq - 0 1",
+    solution: "Qd5",
+    explanation: "퀸을 d5로 이동하여 f7과 c6를 동시에 공격합니다. 전형적인 이중 공격 패턴입니다.",
+    theme: "이중 공격",
+    moves: ["d1d5", "c4f7"],
+  },
+  {
+    id: 3,
+    title: "로크 희생으로 승리",
+    difficulty: "고급",
+    fen: "r3k2r/ppp2ppp/2n5/2bqp3/8/2P2N2/PP1PQPPP/R1B1K2R w KQkq - 0 1",
+    solution: "Rxh7",
+    explanation: "h7 폰을 룩으로 희생하여 킹 포지션을 개방합니다. Tal이 즐겨 사용하던 희생 패턴입니다.",
+    theme: "희생 공격",
+    moves: ["h1h7", "e2h5"],
+  },
+  {
+    id: 4,
+    title: "중앙 돌파",
+    difficulty: "중급",
+    fen: "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1",
+    solution: "d4",
+    explanation: "d4 전진으로 중앙을 장악하고 백의 말들에게 더 많은 공간을 제공합니다.",
+    theme: "중앙 장악",
+    moves: ["d2d4", "f3d4"],
+  },
+  {
+    id: 5,
+    title: "포크 공격",
+    difficulty: "초급",
+    fen: "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1",
+    solution: "Nxe5",
+    explanation: "나이트로 e5 폰을 잡으면서 동시에 d7 폰도 위협합니다. 간단하지만 효과적인 포크입니다.",
+    theme: "포크",
+    moves: ["f3e5", "e5c6"],
+  },
+  {
+    id: 6,
+    title: "핀 활용",
+    difficulty: "중급",
+    fen: "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1",
+    solution: "Bg5",
+    explanation: "비숍을 g5로 이동하여 나이트를 핀합니다. 흑은 나이트를 움직이면 퀸을 잃게 됩니다.",
+    theme: "핀",
+    moves: ["c1g5", "g5f6"],
+  },
+];
+
+export const difficultyLevels = {
+  all: "모든 난이도",
+  easy: "초급",
+  medium: "중급",
+  hard: "고급",
+};
+
+export const themes = {
+  all: "모든 테마",
+  sacrifice: "희생 공격",
+  fork: "포크",
+  pin: "핀",
+  double_attack: "이중 공격",
+  center_control: "중앙 장악",
+  structure: "폰 구조 파괴",
+};
