@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Chessboard } from 'react-chessboard';
+import Chessboard from 'chessboardjsx';
 import { tacticalPuzzles, difficultyLevels, themes } from '../../data/puzzles';
 import './TacticalPuzzles.css';
 
@@ -151,10 +151,10 @@ function TacticalPuzzles() {
 
           <div className="board-wrapper">
             <Chessboard
-              key={position}
               position={position}
-              boardWidth={500}
-              customBoardStyle={{
+              width={500}
+              draggable={false}
+              boardStyle={{
                 borderRadius: '8px',
                 boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)'
               }}

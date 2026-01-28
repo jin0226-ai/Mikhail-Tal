@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Chessboard } from 'react-chessboard';
+import Chessboard from 'chessboardjsx';
 import { Chess } from 'chess.js';
 import './InteractiveChessBoard.css';
 
 function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
-  const [position, setPosition] = useState('start');
+  const [fen, setFen] = useState('start');
   const [currentMove, setCurrentMove] = useState(0);
   const [moves, setMoves] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -17,21 +17,52 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
     onMoveChangeRef.current = onMoveChange;
   }, [onMoveChange]);
 
+  // PGN이 변경될 때 게임을 초기화
   useEffect(() => {
-    const newGame = new Chess();
     try {
+      const newGame = new Chess();
       newGame.loadPgn(pgn);
       const history = newGame.history({ verbose: true });
 
-      // 게임을 처음부터 다시 로드
-      setPosition('start');
       setMoves(history);
       setCurrentMove(0);
+      setFen('start');
     } catch (error) {
       console.error('PGN 로드 실패:', error);
     }
   }, [pgn]);
 
+  // currentMove가 변경될 때 position 업데이트
+  useEffect(() => {
+    console.log('=== Position Update ===');
+    console.log('currentMove:', currentMove);
+    console.log('moves.length:', moves.length);
+
+    // 새 게임 인스턴스 생성하고 현재 수까지 재생
+    const newGame = new Chess();
+    for (let i = 0; i < currentMove; i++) {
+      try {
+        if (typeof moves[i] === 'string') {
+          newGame.move(moves[i]);
+        } else if (moves[i] && moves[i].san) {
+          newGame.move(moves[i].san);
+        }
+      } catch (error) {
+        console.error(`Move ${i} 실행 실패:`, error);
+      }
+    }
+
+    const newFen = newGame.fen();
+    console.log('Calculated FEN:', newFen);
+
+    setFen(newFen);
+
+    if (onMoveChangeRef.current && moves[currentMove - 1]) {
+      onMoveChangeRef.current(moves[currentMove - 1], currentMove);
+    }
+  }, [currentMove, moves]);
+
+  // 자동 재생 기능
   useEffect(() => {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
@@ -55,39 +86,6 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
       }
     };
   }, [isPlaying, playSpeed, moves.length]);
-
-  useEffect(() => {
-    // 현재 수까지 게임을 재구성
-    const newGame = new Chess();
-    console.log('=== Position Update ===');
-    console.log('currentMove:', currentMove);
-    console.log('moves.length:', moves.length);
-
-    for (let i = 0; i < currentMove; i++) {
-      try {
-        // move 객체에서 SAN 표기법을 사용하거나 객체 자체를 전달
-        if (typeof moves[i] === 'string') {
-          newGame.move(moves[i]);
-        } else if (moves[i].san) {
-          newGame.move(moves[i].san);
-        } else {
-          newGame.move(moves[i]);
-        }
-      } catch (error) {
-        console.error(`Move ${i} 실행 실패:`, error);
-      }
-    }
-
-    const newFen = newGame.fen();
-    console.log('Calculated FEN:', newFen);
-
-    // FEN 문자열로 포지션 업데이트
-    setPosition(newFen);
-
-    if (onMoveChangeRef.current && moves[currentMove - 1]) {
-      onMoveChangeRef.current(moves[currentMove - 1], currentMove);
-    }
-  }, [currentMove, moves]);
 
   const goToMove = (moveIndex) => {
     setIsPlaying(false);
@@ -137,10 +135,10 @@ function InteractiveChessBoard({ pgn, gameInfo, onMoveChange }) {
 
       <div className="board-container">
         <Chessboard
-          key={position}
-          position={position}
-          boardWidth={500}
-          customBoardStyle={{
+          position={fen}
+          width={500}
+          draggable={false}
+          boardStyle={{
             borderRadius: '8px',
             boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)'
           }}
